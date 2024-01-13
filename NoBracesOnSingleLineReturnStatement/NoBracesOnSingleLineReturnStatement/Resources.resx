@@ -117,13 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AnalyzerDescription" xml:space="preserve">
+  <data name="AnalyzerDescription_Braces" xml:space="preserve">
+    <value>Add braces on non-controlflow statements inside if-statements.</value>
+  </data>
+  <data name="AnalyzerDescription_NoBraces" xml:space="preserve">
     <value>Remove braces on single line return/if-statements.</value>
   </data>
-  <data name="AnalyzerMessageFormat" xml:space="preserve">
-    <value>If-statement contains single return statement</value>
+  <data name="AnalyzerMessageFormat_Braces" xml:space="preserve">
+    <value>If-statement contains single non-controlflow statement.</value>
   </data>
-  <data name="AnalyzerTitle" xml:space="preserve">
+  <data name="AnalyzerMessageFormat_NoBraces" xml:space="preserve">
+    <value>If-statement contains single return statement.</value>
+  </data>
+  <data name="AnalyzerTitle_Braces" xml:space="preserve">
+    <value>Add braces on non-controlflow statements inside if-statements.</value>
+  </data>
+  <data name="AnalyzerTitle_NoBraces" xml:space="preserve">
     <value>Remove braces on single line return/if-statements.</value>
   </data>
 </root>

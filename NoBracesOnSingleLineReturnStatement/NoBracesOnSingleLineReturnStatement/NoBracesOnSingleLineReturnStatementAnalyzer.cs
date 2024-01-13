@@ -9,20 +9,30 @@ namespace NoBracesOnSingleLineReturnStatement
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NoBracesOnSingleLineReturnStatementAnalyzer : DiagnosticAnalyzer
     {
-        public const string DIAGNOSTICID = "NoBracesOnSingleLineReturnStatement";
-        private const string CATEGORY = "Formatting";
+        public const string DiagnosticId_NoBraces = "IF0002";
+        public const string DiagnosticId_Braces = "IF0003";
+        private const string _category = "Formatting";
 
-        private static readonly string _title = Resources.AnalyzerTitle;
-        private static readonly string _messageFormat = Resources.AnalyzerMessageFormat;
-        private static readonly string _description = Resources.AnalyzerDescription;
-        private static readonly DiagnosticDescriptor _rule = new DiagnosticDescriptor(DIAGNOSTICID, _title,
-                                                                                      _messageFormat, CATEGORY,
-                                                                                      DiagnosticSeverity.Info,
-                                                                                      isEnabledByDefault: true,
-                                                                                      description: _description);
+        private static readonly DiagnosticDescriptor _shouldNotUseBracesRule
+            = new(DiagnosticId_NoBraces,
+                  Resources.AnalyzerTitle_NoBraces,
+                  Resources.AnalyzerMessageFormat_NoBraces,
+                  _category,
+                  DiagnosticSeverity.Info,
+                  isEnabledByDefault: true,
+                  description: Resources.AnalyzerDescription_NoBraces);
+
+        private static readonly DiagnosticDescriptor _shouldUseBracesRule
+            = new(DiagnosticId_Braces,
+                  Resources.AnalyzerTitle_Braces,
+                  Resources.AnalyzerMessageFormat_Braces,
+                  _category,
+                  DiagnosticSeverity.Info,
+                  isEnabledByDefault: true,
+                  description: Resources.AnalyzerDescription_Braces);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(_rule);
+            => ImmutableArray.Create(_shouldNotUseBracesRule, _shouldUseBracesRule);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -34,22 +44,30 @@ namespace NoBracesOnSingleLineReturnStatement
         private static void AnalyzeSyntax(SyntaxTreeAnalysisContext context)
         {
             var root = context.Tree.GetRoot(context.CancellationToken);
-            foreach (var blockSyntax in root.DescendantNodes().OfType<BlockSyntax>())
+            foreach (var ifStatement in root.DescendantNodes().OfType<IfStatementSyntax>())
             {
-                if (!(blockSyntax.Parent is IfStatementSyntax ifStatement))
+                if (ifStatement.Parent is ElseClauseSyntax || ifStatement.Else is not null)
                     continue;
 
-                if (ifStatement.Parent is ElseClauseSyntax)
-                    continue;
-
-                if (ifStatement.Else != null)
-                    continue;
-
-                if (blockSyntax.Statements.Count == 1 && blockSyntax.Statements[0] is ReturnStatementSyntax)
+                if (ifStatement.Statement is not BlockSyntax blockSyntax)
                 {
-                    var diagnostic = Diagnostic.Create(_rule, ifStatement.GetFirstToken().GetLocation());
-                    context.ReportDiagnostic(diagnostic);
+                    if (ifStatement.Statement is ReturnStatementSyntax or ThrowStatementSyntax)
+                        continue;
+
+                    var shouldUseBracesDiagnostic = Diagnostic.Create(_shouldUseBracesRule, ifStatement.GetLocation());
+                    context.ReportDiagnostic(shouldUseBracesDiagnostic);
+
+                    continue;
                 }
+
+                if (blockSyntax.Statements.Count != 1)
+                    continue;
+
+                if (blockSyntax.Statements[0] is not ReturnStatementSyntax and not ThrowStatementSyntax)
+                    continue;
+
+                var shouldNotUseBraces = Diagnostic.Create(_shouldNotUseBracesRule, ifStatement.GetLocation());
+                context.ReportDiagnostic(shouldNotUseBraces);
             }
         }
     }

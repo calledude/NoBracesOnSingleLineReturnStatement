@@ -19,7 +19,7 @@ namespace NoBracesOnSingleLineReturnStatement {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class CodeFixResources {
@@ -61,11 +61,20 @@ namespace NoBracesOnSingleLineReturnStatement {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add braces to single-line non-control statement.
+        /// </summary>
+        internal static string CodeFixTitle_Braces {
+            get {
+                return ResourceManager.GetString("CodeFixTitle_Braces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove braces from single-line control statement.
         /// </summary>
-        internal static string CodeFixTitle {
+        internal static string CodeFixTitle_NoBraces {
             get {
-                return ResourceManager.GetString("CodeFixTitle", resourceCulture);
+                return ResourceManager.GetString("CodeFixTitle_NoBraces", resourceCulture);
             }
         }
     }

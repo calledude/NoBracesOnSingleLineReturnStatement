@@ -19,7 +19,7 @@ namespace NoBracesOnSingleLineReturnStatement {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,29 +61,56 @@ namespace NoBracesOnSingleLineReturnStatement {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove braces on single line return/if-statements..
+        ///   Looks up a localized string similar to Add braces on non-controlflow statements inside if-statements..
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string AnalyzerDescription_Braces {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to If-statement contains single return statement.
-        /// </summary>
-        internal static string AnalyzerMessageFormat {
-            get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("AnalyzerDescription_Braces", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Remove braces on single line return/if-statements..
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string AnalyzerDescription_NoBraces {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("AnalyzerDescription_NoBraces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If-statement contains single non-controlflow statement..
+        /// </summary>
+        internal static string AnalyzerMessageFormat_Braces {
+            get {
+                return ResourceManager.GetString("AnalyzerMessageFormat_Braces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If-statement contains single return statement..
+        /// </summary>
+        internal static string AnalyzerMessageFormat_NoBraces {
+            get {
+                return ResourceManager.GetString("AnalyzerMessageFormat_NoBraces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add braces on non-controlflow statements inside if-statements..
+        /// </summary>
+        internal static string AnalyzerTitle_Braces {
+            get {
+                return ResourceManager.GetString("AnalyzerTitle_Braces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove braces on single line return/if-statements..
+        /// </summary>
+        internal static string AnalyzerTitle_NoBraces {
+            get {
+                return ResourceManager.GetString("AnalyzerTitle_NoBraces", resourceCulture);
             }
         }
     }
