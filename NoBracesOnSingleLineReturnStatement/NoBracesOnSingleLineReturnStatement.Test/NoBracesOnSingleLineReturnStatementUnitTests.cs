@@ -27,11 +27,24 @@ public class NoBracesOnSingleLineReturnStatementUnitTest
         {
             public class something
             {
-                public void DoTheThing(bool f)
+                public int DoTheThing(bool f)
                 {
+                    if (f)
+                    {
+                        return 5;
+                    }
+
+                    if (f)
+                    {
+                        return Task.Run(() =>
+                        {
+                            return 5;
+                        }).Result;
+                    }
+
                     if(f)
                     {
-                        return;
+                        return 5;
                     }
 
                     int i = 5;
@@ -42,7 +55,7 @@ public class NoBracesOnSingleLineReturnStatementUnitTest
                         i = 4;
 
                     if(!f)
-                        return;
+                        return 5;
 
                     Console.WriteLine(i);
                 }

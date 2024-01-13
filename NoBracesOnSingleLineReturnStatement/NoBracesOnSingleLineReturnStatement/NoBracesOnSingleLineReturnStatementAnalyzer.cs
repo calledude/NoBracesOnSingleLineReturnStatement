@@ -53,14 +53,6 @@ public class NoBracesOnSingleLineReturnStatementAnalyzer : DiagnosticAnalyzer
         context.RegisterSyntaxTreeAction(AnalyzeSyntax);
     }
 
-    // TODO: This currently reports diagnostics on multi-line return statements
-    // such as
-    /*
-        return Task.Run(() =>
-        {
-            return 5;
-        }
-    */
     private static void AnalyzeSyntax(SyntaxTreeAnalysisContext context)
     {
         var root = context.Tree.GetRoot(context.CancellationToken);
@@ -84,6 +76,11 @@ public class NoBracesOnSingleLineReturnStatementAnalyzer : DiagnosticAnalyzer
                 continue;
 
             if (!_controlFlowKinds.Contains(blockSyntax.Statements[0].Kind()))
+                continue;
+
+            var statementSpan = blockSyntax.Statements.Span;
+            var lineSpan = context.Tree.GetLineSpan(statementSpan);
+            if (lineSpan.EndLinePosition.Line > lineSpan.StartLinePosition.Line) // This is a multiline statement
                 continue;
 
             var shouldNotUseBraces = Diagnostic.Create(_shouldNotUseBracesRule, ifStatement.GetLocation());
