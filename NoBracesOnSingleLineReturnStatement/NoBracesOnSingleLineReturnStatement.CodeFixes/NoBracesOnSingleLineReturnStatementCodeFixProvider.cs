@@ -22,6 +22,9 @@ public class NoBracesOnSingleLineReturnStatementCodeFixProvider : CodeFixProvide
     public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+        if (root is null)
+            return;
+
         var diagnostic = context.Diagnostics[0];
 
         if (diagnostic.Id == NoBracesOnSingleLineReturnStatementAnalyzer.DiagnosticId_NoBraces)
@@ -46,7 +49,8 @@ public class NoBracesOnSingleLineReturnStatementCodeFixProvider : CodeFixProvide
 
     private Task<Document> AddBracesAsync(Document document, Location location, SyntaxNode root)
     {
-        var ifStatement = root.FindNode(location.SourceSpan) as IfStatementSyntax;
+        if (root.FindNode(location.SourceSpan) is not IfStatementSyntax ifStatement)
+            return Task.FromResult(document);
 
         var block = SyntaxFactory.Block(ifStatement.Statement);
         var newRoot = root.ReplaceNode(ifStatement, ifStatement.WithStatement(block));
