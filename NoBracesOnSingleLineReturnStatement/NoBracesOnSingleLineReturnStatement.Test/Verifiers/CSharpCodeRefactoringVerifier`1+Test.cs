@@ -16,9 +16,7 @@ public static partial class CSharpCodeRefactoringVerifier<TCodeRefactoring>
                 var compilationOptions = solution.GetProject(projectId).CompilationOptions;
                 compilationOptions = compilationOptions.WithSpecificDiagnosticOptions(
                     compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullableWarnings));
-                solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
-
-                return solution;
+                return solution.WithProjectCompilationOptions(projectId, compilationOptions);
             });
         }
     }
