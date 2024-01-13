@@ -6,81 +6,88 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace NoBracesOnSingleLineReturnStatement
+namespace NoBracesOnSingleLineReturnStatement;
+
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public class NoBracesOnSingleLineReturnStatementAnalyzer : DiagnosticAnalyzer
 {
-    [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class NoBracesOnSingleLineReturnStatementAnalyzer : DiagnosticAnalyzer
+    public const string DiagnosticId_NoBraces = "IF0002";
+    public const string DiagnosticId_Braces = "IF0003";
+    private const string _category = "Formatting";
+
+    private static readonly DiagnosticDescriptor _shouldNotUseBracesRule
+        = new(DiagnosticId_NoBraces,
+              Resources.AnalyzerTitle_NoBraces,
+              Resources.AnalyzerMessageFormat_NoBraces,
+              _category,
+              DiagnosticSeverity.Info,
+              isEnabledByDefault: true,
+              description: Resources.AnalyzerDescription_NoBraces);
+
+    private static readonly DiagnosticDescriptor _shouldUseBracesRule
+        = new(DiagnosticId_Braces,
+              Resources.AnalyzerTitle_Braces,
+              Resources.AnalyzerMessageFormat_Braces,
+              _category,
+              DiagnosticSeverity.Info,
+              isEnabledByDefault: true,
+              description: Resources.AnalyzerDescription_Braces);
+
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        => ImmutableArray.Create(_shouldNotUseBracesRule, _shouldUseBracesRule);
+
+    private static readonly HashSet<SyntaxKind> _controlFlowKinds =
+    [
+        SyntaxKind.ReturnStatement,
+        SyntaxKind.ThrowStatement,
+        SyntaxKind.ContinueStatement,
+        SyntaxKind.BreakStatement,
+        SyntaxKind.YieldBreakStatement,
+        SyntaxKind.YieldReturnStatement,
+    ];
+
+    public override void Initialize(AnalysisContext context)
     {
-        public const string DiagnosticId_NoBraces = "IF0002";
-        public const string DiagnosticId_Braces = "IF0003";
-        private const string _category = "Formatting";
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.EnableConcurrentExecution();
+        context.RegisterSyntaxTreeAction(AnalyzeSyntax);
+    }
 
-        private static readonly DiagnosticDescriptor _shouldNotUseBracesRule
-            = new(DiagnosticId_NoBraces,
-                  Resources.AnalyzerTitle_NoBraces,
-                  Resources.AnalyzerMessageFormat_NoBraces,
-                  _category,
-                  DiagnosticSeverity.Info,
-                  isEnabledByDefault: true,
-                  description: Resources.AnalyzerDescription_NoBraces);
-
-        private static readonly DiagnosticDescriptor _shouldUseBracesRule
-            = new(DiagnosticId_Braces,
-                  Resources.AnalyzerTitle_Braces,
-                  Resources.AnalyzerMessageFormat_Braces,
-                  _category,
-                  DiagnosticSeverity.Info,
-                  isEnabledByDefault: true,
-                  description: Resources.AnalyzerDescription_Braces);
-
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-            => ImmutableArray.Create(_shouldNotUseBracesRule, _shouldUseBracesRule);
-
-        private static readonly HashSet<SyntaxKind> _controlFlowKinds =
-        [
-            SyntaxKind.ReturnStatement,
-            SyntaxKind.ThrowStatement,
-            SyntaxKind.ContinueStatement,
-            SyntaxKind.BreakStatement,
-            SyntaxKind.YieldBreakStatement,
-            SyntaxKind.YieldReturnStatement,
-        ];
-
-        public override void Initialize(AnalysisContext context)
+    // TODO: This currently reports diagnostics on multi-line return statements
+    // such as
+    /*
+        return Task.Run(() =>
         {
-            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-            context.EnableConcurrentExecution();
-            context.RegisterSyntaxTreeAction(AnalyzeSyntax);
+            return 5;
         }
-
-        private static void AnalyzeSyntax(SyntaxTreeAnalysisContext context)
+    */
+    private static void AnalyzeSyntax(SyntaxTreeAnalysisContext context)
+    {
+        var root = context.Tree.GetRoot(context.CancellationToken);
+        foreach (var ifStatement in root.DescendantNodes().OfType<IfStatementSyntax>())
         {
-            var root = context.Tree.GetRoot(context.CancellationToken);
-            foreach (var ifStatement in root.DescendantNodes().OfType<IfStatementSyntax>())
+            if (ifStatement.Parent is ElseClauseSyntax || ifStatement.Else is not null)
+                continue;
+
+            if (ifStatement.Statement is not BlockSyntax blockSyntax)
             {
-                if (ifStatement.Parent is ElseClauseSyntax || ifStatement.Else is not null)
+                if (_controlFlowKinds.Contains(ifStatement.Statement.Kind()))
                     continue;
 
-                if (ifStatement.Statement is not BlockSyntax blockSyntax)
-                {
-                    if (_controlFlowKinds.Contains(ifStatement.Statement.Kind()))
-                        continue;
+                var shouldUseBracesDiagnostic = Diagnostic.Create(_shouldUseBracesRule, ifStatement.GetLocation());
+                context.ReportDiagnostic(shouldUseBracesDiagnostic);
 
-                    var shouldUseBracesDiagnostic = Diagnostic.Create(_shouldUseBracesRule, ifStatement.GetLocation());
-                    context.ReportDiagnostic(shouldUseBracesDiagnostic);
-
-                    continue;
-                }
-
-                if (blockSyntax.Statements.Count != 1)
-                    continue;
-
-                if (!_controlFlowKinds.Contains(blockSyntax.Statements[0].Kind()))
-                    continue;
-
-                var shouldNotUseBraces = Diagnostic.Create(_shouldNotUseBracesRule, ifStatement.GetLocation());
-                context.ReportDiagnostic(shouldNotUseBraces);
+                continue;
             }
+
+            if (blockSyntax.Statements.Count != 1)
+                continue;
+
+            if (!_controlFlowKinds.Contains(blockSyntax.Statements[0].Kind()))
+                continue;
+
+            var shouldNotUseBraces = Diagnostic.Create(_shouldNotUseBracesRule, ifStatement.GetLocation());
+            context.ReportDiagnostic(shouldNotUseBraces);
         }
     }
 }

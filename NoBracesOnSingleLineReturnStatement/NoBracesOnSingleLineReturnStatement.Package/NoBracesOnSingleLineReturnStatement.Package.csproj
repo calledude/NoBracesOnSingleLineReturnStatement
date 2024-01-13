@@ -1,44 +1,44 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <IncludeBuildOutput>false</IncludeBuildOutput>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <PackageId>NoBracesOnSingleLineReturnStatement</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>Calle</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>NoBracesOnSingleLineReturnStatement</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
-    <PackageTags>NoBracesOnSingleLineReturnStatement, analyzers</PackageTags>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
+	<PropertyGroup>
+		<PackageId>NoBracesOnSingleLineReturnStatement</PackageId>
+		<PackageVersion>1.0.0.0</PackageVersion>
+		<Authors>Calle</Authors>
+		<PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
+		<PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
+		<PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
+		<RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<Description>NoBracesOnSingleLineReturnStatement</Description>
+		<PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
+		<Copyright>Copyright</Copyright>
+		<PackageTags>NoBracesOnSingleLineReturnStatement, analyzers</PackageTags>
+		<NoPackageAnalysis>true</NoPackageAnalysis>
 
-    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
-  </PropertyGroup>
+		<TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NoBracesOnSingleLineReturnStatement.CodeFixes\NoBracesOnSingleLineReturnStatement.CodeFixes.csproj" />
-    <ProjectReference Include="..\NoBracesOnSingleLineReturnStatement\NoBracesOnSingleLineReturnStatement.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\NoBracesOnSingleLineReturnStatement.CodeFixes\NoBracesOnSingleLineReturnStatement.CodeFixes.csproj" />
+		<ProjectReference Include="..\NoBracesOnSingleLineReturnStatement\NoBracesOnSingleLineReturnStatement.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
+	</ItemGroup>
 
-  <Target Name="_AddAnalyzersToOutput">
-    <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\NoBracesOnSingleLineReturnStatement.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\NoBracesOnSingleLineReturnStatement.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
-    </ItemGroup>
-  </Target>
+	<Target Name="_AddAnalyzersToOutput">
+		<ItemGroup>
+			<TfmSpecificPackageFile Include="$(OutputPath)\NoBracesOnSingleLineReturnStatement.dll" PackagePath="analyzers/dotnet/cs" />
+			<TfmSpecificPackageFile Include="$(OutputPath)\NoBracesOnSingleLineReturnStatement.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
+		</ItemGroup>
+	</Target>
 
 </Project>
