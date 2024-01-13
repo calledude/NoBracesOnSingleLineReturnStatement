@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -34,6 +36,16 @@ namespace NoBracesOnSingleLineReturnStatement
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
             => ImmutableArray.Create(_shouldNotUseBracesRule, _shouldUseBracesRule);
 
+        private static readonly HashSet<SyntaxKind> _controlFlowKinds =
+        [
+            SyntaxKind.ReturnStatement,
+            SyntaxKind.ThrowStatement,
+            SyntaxKind.ContinueStatement,
+            SyntaxKind.BreakStatement,
+            SyntaxKind.YieldBreakStatement,
+            SyntaxKind.YieldReturnStatement,
+        ];
+
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -51,7 +63,7 @@ namespace NoBracesOnSingleLineReturnStatement
 
                 if (ifStatement.Statement is not BlockSyntax blockSyntax)
                 {
-                    if (ifStatement.Statement is ReturnStatementSyntax or ThrowStatementSyntax)
+                    if (_controlFlowKinds.Contains(ifStatement.Statement.Kind()))
                         continue;
 
                     var shouldUseBracesDiagnostic = Diagnostic.Create(_shouldUseBracesRule, ifStatement.GetLocation());
@@ -63,7 +75,7 @@ namespace NoBracesOnSingleLineReturnStatement
                 if (blockSyntax.Statements.Count != 1)
                     continue;
 
-                if (blockSyntax.Statements[0] is not ReturnStatementSyntax and not ThrowStatementSyntax)
+                if (!_controlFlowKinds.Contains(blockSyntax.Statements[0].Kind()))
                     continue;
 
                 var shouldNotUseBraces = Diagnostic.Create(_shouldNotUseBracesRule, ifStatement.GetLocation());

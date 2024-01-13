@@ -70,7 +70,7 @@ namespace NoBracesOnSingleLineReturnStatement {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove braces on single line return/if-statements..
+        ///   Looks up a localized string similar to Remove braces on single line controlflow/if-statements..
         /// </summary>
         internal static string AnalyzerDescription_NoBraces {
             get {
@@ -88,7 +88,7 @@ namespace NoBracesOnSingleLineReturnStatement {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If-statement contains single return statement..
+        ///   Looks up a localized string similar to If-statement contains single controlflow statement..
         /// </summary>
         internal static string AnalyzerMessageFormat_NoBraces {
             get {
@@ -106,7 +106,7 @@ namespace NoBracesOnSingleLineReturnStatement {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove braces on single line return/if-statements..
+        ///   Looks up a localized string similar to Remove braces on single line controlflow/if-statements..
         /// </summary>
         internal static string AnalyzerTitle_NoBraces {
             get {
