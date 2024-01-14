@@ -10,11 +10,11 @@ env:
   SOLUTION_FILE_PATH: .
   BUILD_CONFIGURATION: Release
 
-permissions:
-  contents: read
-
 jobs:
   build:
+    permissions:
+      contents: write
+      
     runs-on: windows-latest
 
     steps:
@@ -42,3 +42,10 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: msbuild /restore:false /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Release artifact
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "**/${{ env.BUILD_CONFIGURATION }}/*/*.vsix"
+        tag: ${{ env.GitVersion_MajorMinorPatch }}
+        commit: ${{ github.sha }}
