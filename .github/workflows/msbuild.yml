@@ -44,6 +44,7 @@ jobs:
       run: msbuild /restore:false /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Release artifact
+      if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
       uses: ncipollo/release-action@v1
       with:
         artifacts: "**/${{ env.BUILD_CONFIGURATION }}/*/*.vsix"
