@@ -33,7 +33,7 @@ jobs:
       run: dotnet-gitversion /output buildserver
 
     - name: Replace version in vsixmanifest
-      run: (Get-Content NoBracesOnSingleLineReturnStatement\NoBracesOnSingleLineReturnStatement.Vsix\source.extension.vsixmanifest) -replace 'Version="1.0.0"', 'Version="${{ env.GitVersion_MajorMinorPatch }}"' | Set-Content NoBracesOnSingleLineReturnStatement\NoBracesOnSingleLineReturnStatement.Vsix\source.extension.vsixmanifest
+      run: (Get-Content (Get-ChildItem . -Filter *.vsixmanifest -Recurse)) -replace 'Version="1.0.0"', 'Version="${{ env.GitVersion_MajorMinorPatch }}"' | Set-Content  (Get-ChildItem . -Filter *.vsixmanifest -Recurse)
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
