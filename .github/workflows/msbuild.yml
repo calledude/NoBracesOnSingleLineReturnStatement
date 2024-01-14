@@ -1,0 +1,52 @@
+name: MSBuild
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    permissions:
+      contents: write
+      
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Install GitVersion
+      run: dotnet tool install -g GitVersion.Tool --version 5.*
+      
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Execute GitVersion
+      id: version
+      run: dotnet-gitversion /output buildserver
+
+    - name: Replace version in vsixmanifest
+      run: (Get-Content (Get-ChildItem . -Filter *.vsixmanifest -Recurse)) -replace 'Version="1.0.0"', 'Version="${{ env.GitVersion_MajorMinorPatch }}"' | Set-Content  (Get-ChildItem . -Filter *.vsixmanifest -Recurse)
+
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: dotnet restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /restore:false /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Release artifact
+      if: ${{ github.event_name == 'push' && github.ref_name == 'master' }}
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "**/${{ env.BUILD_CONFIGURATION }}/*/*.vsix"
+        tag: ${{ env.GitVersion_MajorMinorPatch }}
+        commit: ${{ github.sha }}
